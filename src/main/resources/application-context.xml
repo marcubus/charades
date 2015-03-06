@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  
+	<bean id="books" class="com.marcubus.charades.service.SecretRepositoryImpl">
+		<constructor-arg index="0" ref="books" />
+		<constructor-arg index="1" value="books.txt" />
+	</bean>
+
+	<bean id="movies" class="com.marcubus.charades.service.SecretRepositoryImpl">
+    <constructor-arg index="0" ref="movies" />
+    <constructor-arg index="1" value="movies.txt" />
+  </bean>
+	
+	<bean id="songs" class="com.marcubus.charades.service.SecretRepositoryImpl">
+    <constructor-arg index="0" ref="songs" />
+    <constructor-arg index="1" value="songs.txt" />    
+  </bean>
+	 
+</beans>
