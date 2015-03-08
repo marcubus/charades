@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marcubus.charades.model.Category;
 import com.marcubus.charades.model.Secret;
 import com.marcubus.charades.service.exception.OutOfSecretsException;
 
@@ -17,7 +18,7 @@ public class SecretRepositoryTest {
 
   @Before
   public void setup() throws Exception {
-    secrets = new SecretRepositoryImpl("one", "src/test/resources/one.txt");
+    secrets = new SecretRepositoryImpl("one", "one.txt");
   }
   
   @Test
@@ -26,9 +27,14 @@ public class SecretRepositoryTest {
   }
   
   @Test
+  public void constructFilePath() throws Exception {
+    secrets = new SecretRepositoryImpl("one", "src/test/resources/one.txt");
+    assertNotNull(secrets);
+  }
+  
+  @Test
   public void getCategoryWorks() {
     assertEquals("one", secrets.getCategory().getName());
-    assertEquals(1, secrets.getCategory().getSecretCount());
   }
   
   
@@ -67,4 +73,12 @@ public class SecretRepositoryTest {
   public void getRemainingSecrets() {
     assertEquals(1, secrets.getRemainingSecrets());
   }
+  
+  @Test
+  public void secretHasCategory() throws Exception {
+    Secret secret = secrets.yeild();
+    Category category = secret.getCategory();
+    assertNotNull(category);
+  }
+  
 }

@@ -43,7 +43,7 @@ public class SecretFactoryTest {
   
   @Test
   public void getSecret() throws Exception {
-    Secret secret = new Secret("test");
+    Secret secret = new Secret("test", new Category("derp"));    
     SecretRepository secrets = mock(SecretRepository.class);
     
     when(secrets.getRemainingSecrets()).thenReturn(1);    
@@ -56,7 +56,7 @@ public class SecretFactoryTest {
   
   @Test
   public void getSecretHandleOutOfSecretsException() throws Exception {
-    Secret secret = new Secret("woww");
+    Secret secret = new Secret("woww", new Category("derp"));    
     SecretRepository secrets = mock(SecretRepository.class);
     
     when(secrets.getRemainingSecrets()).thenReturn(1);
@@ -76,8 +76,8 @@ public class SecretFactoryTest {
   
   @Test
   public void getSecretId() throws Exception {
-    Secret secret = new Secret("xx");
-    Category category = new Category("test", 1);
+    Category category = new Category("test");
+    Secret secret = new Secret("xx", category);
     SecretRepository secrets = mock(SecretRepository.class);
     
     when(secrets.getRemainingSecrets()).thenReturn(1);
@@ -93,12 +93,13 @@ public class SecretFactoryTest {
   @Test(expected=NoAvailableSecretRepositoriesException.class)
   public void getSecretWithBadId() throws Exception {
     SecretRepository secrets = mock(SecretRepository.class);
+    Category category = new Category("robot");
     
     when(secrets.getRemainingSecrets()).thenReturn(1);
-    when(secrets.getCategory()).thenReturn(new Category("robot", 1));
+    when(secrets.getCategory()).thenReturn(category);
     factory.addRepository(secrets);    
-    when(secrets.yeild()).thenReturn(new Secret("xx"));       
-    factory.getSecret(new Category("blaa", 1));
+    when(secrets.yeild()).thenReturn(new Secret("xx", category));       
+    factory.getSecret(new Category("blaa"));
   }
   
   @Test
@@ -110,14 +111,14 @@ public class SecretFactoryTest {
   @Test
   public void getCategoriesWorks() throws Exception {
     SecretRepository secrets = mock(SecretRepository.class);
+    Category category = new Category("test");
     
-    when(secrets.getRemainingSecrets()).thenReturn(1);
-    when(secrets.getCategory()).thenReturn(new Category("test", 1));
+    when(secrets.getRemainingSecrets()).thenReturn(1);    
+    when(secrets.getCategory()).thenReturn(category);
     factory.addRepository(secrets);    
     List<Category> categories = factory.getCategories();
     
     assertEquals(1, categories.size());
     assertEquals("test", categories.get(0).getName());
-    assertEquals(1, categories.get(0).getSecretCount());
   }
 }

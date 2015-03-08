@@ -21,7 +21,7 @@ public class CLIController implements CommandLineRunner {
     try (BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in))) {
       while (true) {
         Secret secret = factory.getSecret();
-        System.out.println(secret.getText());
+        System.out.println(secret.getCategory().getName().toUpperCase()+": "+secret.getText());
         bufferRead.readLine();
       }
     }    

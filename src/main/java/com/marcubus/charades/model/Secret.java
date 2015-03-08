@@ -3,17 +3,19 @@ package com.marcubus.charades.model;
 public class Secret {
 
   private String text;
+  private Category category;
   
-  public Secret(final String secret) {
-    setText(secret);
+  public Secret(final String secret, Category category) {
+    this.text = secret;
+    this.category = category;
   }
 
   public String getText() {
     return text;
   }
 
-  public void setText(String text) {
-    this.text = text;
+  public Category getCategory() {
+    return category;
   }
 
 }
