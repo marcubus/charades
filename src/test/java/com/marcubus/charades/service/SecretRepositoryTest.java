@@ -1,6 +1,7 @@
 package com.marcubus.charades.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
@@ -8,16 +9,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.marcubus.charades.model.Secret;
-import com.marcubus.charades.service.OutOfSecretsException;
-import com.marcubus.charades.service.SecretRepository;
-import com.marcubus.charades.service.SecretRepositoryImpl;
+import com.marcubus.charades.service.exception.OutOfSecretsException;
 
 public class SecretRepositoryTest {
 
   private SecretRepository secrets;
 
   @Before
-  public void setup() throws IOException {
+  public void setup() throws Exception {
     secrets = new SecretRepositoryImpl("one", "src/test/resources/one.txt");
   }
   
@@ -27,8 +26,9 @@ public class SecretRepositoryTest {
   }
   
   @Test
-  public void idWorks() {
-    assertEquals("one", secrets.getId());
+  public void getCategoryWorks() {
+    assertEquals("one", secrets.getCategory().getName());
+    assertEquals(1, secrets.getCategory().getSecretCount());
   }
   
   

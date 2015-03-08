@@ -1,4 +1,4 @@
-package com.marcubus.charades.service;
+package com.marcubus.charades.service.exception;
 
 public class OutOfSecretsException extends Exception {
 

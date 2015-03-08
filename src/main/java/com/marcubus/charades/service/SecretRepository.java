@@ -1,15 +1,17 @@
 package com.marcubus.charades.service;
 
+import com.marcubus.charades.model.Category;
 import com.marcubus.charades.model.Secret;
+import com.marcubus.charades.service.exception.OutOfSecretsException;
 
 public interface SecretRepository {
 
+  Category getCategory();
+
   Secret yeild() throws OutOfSecretsException;
 
-  void reset();
-
-  String getId();
-
   int getRemainingSecrets();
+
+  void reset();
 
 }

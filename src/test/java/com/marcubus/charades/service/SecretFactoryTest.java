@@ -5,10 +5,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marcubus.charades.model.Category;
 import com.marcubus.charades.model.Secret;
+import com.marcubus.charades.service.exception.NoAvailableSecretRepositoriesException;
+import com.marcubus.charades.service.exception.OutOfSecretsException;
+import com.marcubus.charades.service.exception.SecretRepositoryHasNoAvailableSecretsException;
 
 public class SecretFactoryTest {
 
@@ -71,29 +77,47 @@ public class SecretFactoryTest {
   @Test
   public void getSecretId() throws Exception {
     Secret secret = new Secret("xx");
+    Category category = new Category("test", 1);
     SecretRepository secrets = mock(SecretRepository.class);
     
     when(secrets.getRemainingSecrets()).thenReturn(1);
-    when(secrets.getId()).thenReturn("test");
+    when(secrets.getCategory()).thenReturn(category);
     factory.addRepository(secrets);
     
-    when(secrets.yeild()).thenReturn(secret);       
-    secret = factory.getSecret("test");
+    when(secrets.yeild()).thenReturn(secret); 
+    secret = factory.getSecret(category);
         
     assertEquals("xx", secret.getText());
   }
 
   @Test(expected=NoAvailableSecretRepositoriesException.class)
   public void getSecretWithBadId() throws Exception {
-    Secret secret = new Secret("xx");
     SecretRepository secrets = mock(SecretRepository.class);
     
     when(secrets.getRemainingSecrets()).thenReturn(1);
-    when(secrets.getId()).thenReturn("robot");
-    factory.addRepository(secrets);
-    
-    when(secrets.yeild()).thenReturn(secret);       
-    factory.getSecret("blaa");
+    when(secrets.getCategory()).thenReturn(new Category("robot", 1));
+    factory.addRepository(secrets);    
+    when(secrets.yeild()).thenReturn(new Secret("xx"));       
+    factory.getSecret(new Category("blaa", 1));
   }
-   
+  
+  @Test
+  public void getCategories() {
+    List<Category> categories = factory.getCategories();
+    assertNotNull(categories);
+  }
+  
+  @Test
+  public void getCategoriesWorks() throws Exception {
+    SecretRepository secrets = mock(SecretRepository.class);
+    
+    when(secrets.getRemainingSecrets()).thenReturn(1);
+    when(secrets.getCategory()).thenReturn(new Category("test", 1));
+    factory.addRepository(secrets);    
+    List<Category> categories = factory.getCategories();
+    
+    assertEquals(1, categories.size());
+    assertEquals("test", categories.get(0).getName());
+    assertEquals(1, categories.get(0).getSecretCount());
+  }
 }

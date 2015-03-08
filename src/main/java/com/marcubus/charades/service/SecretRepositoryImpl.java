@@ -1,54 +1,62 @@
 package com.marcubus.charades.service;
 
-import java.io.IOException;
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
+import com.marcubus.charades.model.Category;
 import com.marcubus.charades.model.Secret;
+import com.marcubus.charades.service.exception.OutOfSecretsException;
 
 public class SecretRepositoryImpl implements SecretRepository {
 
-  private String id;
+  private Category category;
   private String path;
-  private Random selector;
   
   private List<Secret> secrets;
   private List<Secret> publicKnowledge; 
     
-  public SecretRepositoryImpl(final String id, final String path) throws IOException {
-    this.id = id;
+  public SecretRepositoryImpl(final String categoryName, final String path) throws Exception {    
     this.path = path;
-    init();
+    readSecretsFromFile();    
+    this.category = new Category(categoryName, secrets.size());
   }
 
-  private void init() throws IOException {
-    selector = new Random();
+  private void readSecretsFromFile() throws Exception {
     secrets = new ArrayList<Secret>();
-    publicKnowledge = new ArrayList<Secret>();
-    
-    List<String> rawSecrets = Files.readAllLines(Paths.get(path), Charset.forName("UTF-8"));
-    rawSecrets.stream().forEach(raw -> secrets.add(new Secret(raw)));    
+    publicKnowledge = new ArrayList<Secret>();    
+    List<String> rawSecrets = Files.readAllLines(getFilePath(path), Charset.defaultCharset());
+    rawSecrets.stream().forEach(raw -> secrets.add(new Secret(raw)));
+    Collections.shuffle(secrets);
+  }
+  
+  private Path getFilePath(String path) throws Exception {
+    Path result = new File(path).isFile() ? Paths.get(path) :
+        Paths.get(this.getClass().getResource(path).toURI());
+    return result;
   }
   
   public Secret yeild() throws OutOfSecretsException {
     if (secrets.size() == 0)
       throw new OutOfSecretsException();
-    Secret result = secrets.remove(selector.nextInt(secrets.size()));
+    Secret result = secrets.remove(secrets.size() - 1);
     publicKnowledge.add(result);
     return result;
   }
 
   public void reset() {
     secrets.addAll(publicKnowledge);
+    Collections.shuffle(secrets); 
     publicKnowledge.clear();
   }
 
-  public String getId() {
-    return id;
+  public Category getCategory() {
+    return category;
   }
 
   @Override

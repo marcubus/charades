@@ -1,11 +1,13 @@
 package com.marcubus.charades;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.marcubus.charades.service.SecretFactory;
 
+@Ignore
 public class AppTest {
 
   @Test
